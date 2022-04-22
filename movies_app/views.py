@@ -4,6 +4,7 @@ from .models import Movie
 import requests, json
 from rest_framework import viewsets
 from .serializers import *
+from django.contrib.auth.models import User
 
 # To fetch a list of movies based on a keyword
 # https://api.themoviedb.org/3/search/movie?api_key=<API_KEY>&query=<KEYWORD>
@@ -37,14 +38,14 @@ def tmdb_data(request, movie_id):
         watchmode_data(tmdb_id)
         parse_json[0]['title'].save()
 
-def watchmode_data(request, tmdb_id):
-    sauce = []
-    query = f'https://api.watchode.com/v1/title/{tmdb_id}/details/?apikey={WATCHMODE_API_KEY}'
-    response = requests.get(query)
-    data = response.text
-    parse_json = json.loads(data)
-    sources = parse_json['sources']
-    for source in sources:
+# def watchmode_data(request, tmdb_id):
+#     sauce = []
+#     query = f'https://api.watchode.com/v1/title/{tmdb_id}/details/?apikey={WATCHMODE_API_KEY}'
+#     response = requests.get(query)
+#     data = response.text
+#     parse_json = json.loads(data)
+#     sources = parse_json['sources']
+#     for source in sources:
 
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -54,3 +55,7 @@ class MovieViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer

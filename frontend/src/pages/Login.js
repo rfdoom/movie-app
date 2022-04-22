@@ -1,105 +1,62 @@
-import { useRef, useState, useEffect, useContext } from 'react'
-import { Link } from 'react-router-dom'
-import AuthContext from '../api/AuthProvider'
-import axios from '../api/Axios'
+import React, { Component } from 'react'
 
-const LOGIN_URL = '/login'
+class Login extends Component {
 
-function Login(props) {
-  const { setAuth } = useContext(AuthContext)
-  const userRef = useRef()
-  const errRef = useRef()
-
-  const [user, setUser] = useState('')
-  const [password, setPassword] = useState('')
-  const [errMsg, setErrMsg] = useState('')
-  const [success, setSuccess] = useState(false)
-
-  /* To set the focus on the first input when the component loads */
-  useEffect(() => {
-    userRef.current.focus();
-  }, [])
-
-  /* If the user changes the user/password, errmsg will leave */
-  useEffect(() => {
-    setErrMsg('');
-  }, [user, password])
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      const response = await axios.post(LOGIN_URL, 
-        JSON.stringify({user, password}), 
-        {
-          headers: {'Content-Type': 'application/json'},
-          withCredentials: true
-        }
-      )
-      console.log(JSON.stringify(response))
-      /* optional chaining -- chains like '.' would, but returns 'undefined' if the chain isn't there */
-      const accessToken = response?.data?.accessToken;
-      const roles = response?.data?.roles;
-      setAuth({ user, password, roles, accessToken });
-      setUser('');
-      setPassword('');
-      setSuccess(true);
-    } catch (err) {
-      
-        if (!err?.response) {
-          setErrMsg('No Server Response')
-        }
-        else if (err.response?.status === 400) {
-          setErrMsg('Missing Username or Password')
-        }
-        else if (err.response?.status === 401) {
-          setErrMsg('Unauthorized')
-        }
-        else {
-          setErrMsg('Login failed')
-        }
-        errRef.current.focus()
-    }
-    
+  state = {
+    credentials: {username: '', password: ''}
   }
 
-  /* if there is a successful log in display message and link to homepage
-      if there isn't one, display the login page with error message */
-  return (
-    <div>
-      {success ? (<div><h1>You are logged in!</h1><br /><p><Link to='/'>Go to home</Link></p></div>) 
-      : (
+  login = event => {
+    console.log(this.state.credentials);
+    fetch('http://127.0.0.1:8000/auth/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(this.state.credentials)
+    })
+    .then(data => data.json())
+    .then(
+      data => {
+        console.log(data.token);
+      }
+    ).catch(error => console.error(error))
+  }
+
+  inputChanged = event => {
+    const cred = this.state.credentials;
+    cred[event.target.name] = event.target.value;
+    this.setState({credentials: cred});
+  }
+
+
+  render() {
+    return (
       <div>
-        <div>
-          <p ref={errRef} className={errMsg ? "errMsg" : "offscreen"}>{errMsg}</p>
-        </div>
-        <h1>Please Log In</h1>
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username: </label>  
+        <h1>Login User</h1>
+
+        <label>
+          Username: 
           <input 
             type="text" 
             name="username" 
-            ref={userRef} 
-            onChange={(e) => setUser(e.target.value)}
-            value={user}
-            required
+            value={this.state.credentials.username} 
+            onChange={this.inputChanged}
           />
-          <br />
-          <label htmlFor="password">Password: </label>  
+        </label>
+        <br />
+        <label>
+          Password: 
           <input 
             type="password" 
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            required
+            name="password" 
+            value={this.state.credentials.password} 
+            onChange={this.inputChanged}
           />
-          <div><button type="submit">Sign In</button></div>
-        </form>
+        </label>
         <br />
-        <h3>Need an account?<span><Link to='/signup'> Sign up here</Link></span></h3>
-    </div>
-      )}
-    </div>
-  )
+        <button onClick={this.login}>Login</button>
+      </div>
+    )
+  }
 }
 
 export default Login;
