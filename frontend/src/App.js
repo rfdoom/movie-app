@@ -1,18 +1,30 @@
-import logo from './logo.svg';
+
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom';
-import React from 'react';
+import React, { useState } from 'react'
 import Home from './pages/Home'
-import Search from './pages/Search';
+import Search from './pages/Search'
+import Login from './pages/Login'
 
 function App() {
+  const [token, setToken] = useState();
+  
+  /*if(!token) {
+    return <Login setToken={setToken} />
+  }*/
+
   return (
     <div className="App">
       <Router>
         <Link to='/'><h1>WhereToWatch</h1></Link>
+        <div className="default-links">
+          <Link to="/login"><h4>Login</h4></Link>
+          <Link to="/search"><h4>Search</h4></Link>
+        </div>
         <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/search" element={<Search />}/>
+          <Route path="/login" element={<Login />}/>
         </Routes>
       </Router>
     </div>

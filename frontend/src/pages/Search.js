@@ -1,9 +1,17 @@
 function Search(props) {
   return (
-    <div>
-      <h2>Search</h2>
-      <hr />
-    </div>
+    <form action="/" method="get">
+      <label htmlFor="header-search">
+        <span className="visually-hidden">Search Movies</span>
+      </label>
+      <input
+        type="text"
+        id="header-search"
+        placeholder="Search movies..."
+        name="search"
+      />
+      <button type="submit">Search</button>
+    </form>
   )
 }
 
