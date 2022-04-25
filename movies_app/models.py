@@ -11,10 +11,13 @@ class Movie(models.Model):
     overview = models.TextField(blank=True, null=True)
     release_date = models.DateField(blank=True, null=True)
     tmdb_id = models.IntegerField(blank=True, null=True)
+    image = models.CharField(max_length=255, blank=True, null=True)
     services = []
 
     def __str__(self):
         return self.title
+
+    
 
 class Review(models.Model):
     author = models.CharField(max_length=40, default='anonymous')

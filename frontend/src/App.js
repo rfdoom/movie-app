@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import Login from './pages/Login'
-import Movies from './pages/Movies';
 
 function App() {
   

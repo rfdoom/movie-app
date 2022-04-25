@@ -1,13 +1,13 @@
 from re import T
 from django.shortcuts import render
-from django.http import HttpResponse
-from .models import Movie
-import requests, json
+from .models import Movie, Review
+import requests, json, urllib.request
 from rest_framework import viewsets
 from .serializers import *
 from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
 
 
 # To fetch a list of movies based on a keyword
@@ -18,38 +18,44 @@ from rest_framework.permissions import IsAuthenticated
 
 
 # Create your views here.
-TMDB_API_KEY = ''
+TMDB_API_KEY = '673631b95bdadedc0122f4f13d0a8ce5'
 
-WATCHMODE_API_KEY = ''
-WATCHMODE_SEARCH_FIELD = ''
-WATCHMODE_SEARCH_VALUE = ''
-WATCHMODE_BASE_PATH = f'https://api.watchmode.com/v1/search/?apikey={WATCHMODE_API_KEY}&search_field={WATCHMODE_SEARCH_FIELD}&search_value={WATCHMODE_SEARCH_VALUE}'
+WATCHMODE_API_KEY = 'y0IeErP6SKuGg0JauKEzL884XeqeQc80awqexTeD'
 
-
-def tmdb_data(request, movie_id):
-    query = f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={TMDB_API_KEY}&language=en-US'
-    response = requests.get(query)
+# TODO get csrf on and working with axios
+@csrf_exempt
+def tmdb_data(request):
+    query = request.POST['search'].replace(' ', '%20')
+    url = f'https://api.themoviedb.org/3/search/movie?api_key={TMDB_API_KEY}&query={query}>'
+    response = requests.get(url)
     if response.status_code == 200:
-        data = response.json()
-        parse_json = json.loads(data)
-        parse_json[0]['title'] = Movie(
-            title = parse_json[0]['title'],
-            overview = parse_json[0]['overview'],
-            release_date = parse_json[0]['release_date'],
-            tmdb_id = parse_json[0]['id']
+        parse_json = response.json()
+        tmdb_id = parse_json['results'][0]['id']
+        sources = watchmode_data(tmdb_id)
+        movie = Movie(
+            title = parse_json['results'][0]['title'],
+            overview = parse_json['results'][0]['overview'],
+            release_date = parse_json['results'][0]['release_date'],
+            tmdb_id = parse_json['results'][0]['id'],
+            image = parse_json['results'][0]['poster_path']  
         )
-        tmdb_id = parse_json[0]['id']
-        watchmode_data(tmdb_id)
-        parse_json[0]['title'].save()
+        movie.services.extend(sources)
+        movie.save()
+        return movie
 
-# def watchmode_data(request, tmdb_id):
-#     sauce = []
-#     query = f'https://api.watchode.com/v1/title/{tmdb_id}/details/?apikey={WATCHMODE_API_KEY}'
-#     response = requests.get(query)
-#     data = response.text
-#     parse_json = json.loads(data)
-#     sources = parse_json['sources']
-#     for source in sources:
+def watchmode_data(request):
+    sauce = []
+    url = f'https://api.watchmode.com/v1/title/movie-{request}/details/?apiKey={WATCHMODE_API_KEY}&append_to_response=sources'
+    print('request:', request, 'apikey:', WATCHMODE_API_KEY)
+    response = requests.get(url)
+    data = response.json()
+    source = data['sources']
+    for sou in source:
+        if sou['name'] not in sauce:
+            sauce.append(sou['name']) 
+        else:
+            continue
+    return sauce
 
 
 class MovieViewSet(viewsets.ModelViewSet):

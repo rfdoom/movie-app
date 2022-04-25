@@ -8,5 +8,6 @@ router.register('users', views.UserViewSet)
 
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('result/', views.tmdb_data)
 ]
