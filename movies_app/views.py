@@ -1,3 +1,4 @@
+from re import T
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Movie
@@ -5,6 +6,9 @@ import requests, json
 from rest_framework import viewsets
 from .serializers import *
 from django.contrib.auth.models import User
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
 
 # To fetch a list of movies based on a keyword
 # https://api.themoviedb.org/3/search/movie?api_key=<API_KEY>&query=<KEYWORD>
@@ -51,6 +55,8 @@ def tmdb_data(request, movie_id):
 class MovieViewSet(viewsets.ModelViewSet):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+    authentication_classes = [TokenAuthentication, ]
+    permission_classes = [IsAuthenticated,  ]
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()

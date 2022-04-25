@@ -5,13 +5,16 @@ import React, { useState } from 'react'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import Login from './pages/Login'
+import Movies from './pages/Movies';
 
 function App() {
-  const [token, setToken] = useState();
   
-  /*if(!token) {
-    return <Login setToken={setToken} />
-  }*/
+  const [token, setToken] = useState('')
+
+  const userLogin = (tok) => {
+    setToken(tok)
+    console.log(token)
+  }
 
   return (
     <div className="App">
@@ -24,7 +27,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />}/>
           <Route path="/search" element={<Search />}/>
-          <Route path="/login" element={<Login />}/>
+          <Route path="/login" element={<Login userLogin={userLogin}/>}/>
         </Routes>
       </Router>
     </div>

@@ -3,7 +3,7 @@ from . import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('movie', views.MovieViewSet)
+router.register('movies', views.MovieViewSet)
 router.register('users', views.UserViewSet)
 
 

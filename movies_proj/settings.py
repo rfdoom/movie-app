@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'movies_app',
     'corsheaders',
+    'movies_app',
 ]
 
 MIDDLEWARE = [
@@ -65,14 +65,14 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALL_CREDENTIALS = True
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
         'rest_framework.permissions.IsAuthenticated'
-    ]
+    )
 }
 
 ROOT_URLCONF = 'movies_proj.urls'

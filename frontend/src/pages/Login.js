@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import Axios from 'axios'
 
 class Login extends Component {
 
@@ -7,10 +8,25 @@ class Login extends Component {
   }
 
   login = event => {
-    console.log(this.state.credentials);
+    /*console.log(this.state.credentials);*/
     fetch('http://127.0.0.1:8000/auth/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(this.state.credentials)
+    })
+    .then(data => data.json())
+    .then(
+      data => {
+        console.log(data.token);
+      }
+    ).catch(error => console.error(error))
+  } 
+
+  register = event => {
+    /*console.log(this.state.credentials);*/
+    fetch('http://127.0.0.1:8000/api/users/', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Authorization': 'Token e6834895032e3021fd664811cc04b02afbfc1e65'},
       body: JSON.stringify(this.state.credentials)
     })
     .then(data => data.json())
@@ -54,6 +70,8 @@ class Login extends Component {
         </label>
         <br />
         <button onClick={this.login}>Login</button>
+        <button onClick={this.register}>Register</button>
+
       </div>
     )
   }
