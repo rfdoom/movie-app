@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import Login from './pages/Login'
-import movieNight from './img/movieNight.png'
 
 function App() {
   
@@ -15,7 +14,7 @@ function App() {
     setToken(tok)
     console.log(token)
   }
-
+  
   return (
     <div className="App">
       <div style={{

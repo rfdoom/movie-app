@@ -16,13 +16,14 @@ function Search(props) {
       });
     }
     catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
-  // useEffect(() => {
-  //   searchResults
-  // }, [])
+  // const getResult = async () => {
+  //   const { data } = await axios.get(`https://localhost:8000/api/result/${request}`)
+  //   console.log(data)
+  // }
 
   return (
     <div>

@@ -8,7 +8,6 @@ function Login(props) {
   const [redirect, setRedirect] = useState(false)
 
   const login = event => {
-    /*console.log(this.state.credentials);*/
     fetch('http://127.0.0.1:8000/auth/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -26,7 +25,6 @@ function Login(props) {
   } 
 
   const register = event => {
-    /*console.log(this.state.credentials);*/
     fetch('http://127.0.0.1:8000/api/users/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json', 'Authorization': 'Token e6834895032e3021fd664811cc04b02afbfc1e65'},
@@ -62,8 +60,7 @@ function Login(props) {
         Username: 
         <input 
           type="text" 
-          name="username" 
-          //value={credentials.username} 
+          name="username"  
           onChange={inputChanged}
         />
       </label>
@@ -72,8 +69,7 @@ function Login(props) {
         Password: 
         <input 
           type="password" 
-          name="password" 
-          //value={credentials.password} 
+          name="password"  
           onChange={inputChanged}
         />
       </label>

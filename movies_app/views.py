@@ -23,25 +23,30 @@ TMDB_API_KEY = '673631b95bdadedc0122f4f13d0a8ce5'
 WATCHMODE_API_KEY = 'y0IeErP6SKuGg0JauKEzL884XeqeQc80awqexTeD'
 
 # TODO get csrf on and working with axios
+# TODO pull from database if title already there
 @csrf_exempt
 def tmdb_data(request):
-    query = request.POST['search'].replace(' ', '%20')
-    url = f'https://api.themoviedb.org/3/search/movie?api_key={TMDB_API_KEY}&query={query}>'
-    response = requests.get(url)
-    if response.status_code == 200:
-        parse_json = response.json()
-        tmdb_id = parse_json['results'][0]['id']
-        sources = watchmode_data(tmdb_id)
-        movie = Movie(
-            title = parse_json['results'][0]['title'],
-            overview = parse_json['results'][0]['overview'],
-            release_date = parse_json['results'][0]['release_date'],
-            tmdb_id = parse_json['results'][0]['id'],
-            image = parse_json['results'][0]['poster_path']  
-        )
-        movie.services.extend(sources)
-        movie.save()
-        return movie
+    titleCase = request.POST['search'].title()
+    if Movie.objects.filter(title=titleCase).exists(): 
+        return Movie.objects.get(title=titleCase)
+    else:
+        query = request.POST['search'].replace(' ', '%20')
+        url = f'https://api.themoviedb.org/3/search/movie?api_key={TMDB_API_KEY}&query={query}>'
+        response = requests.get(url)
+        if response.status_code == 200:
+            parse_json = response.json()
+            tmdb_id = parse_json['results'][0]['id']
+            sources = watchmode_data(tmdb_id)
+            movie = Movie(
+                title = parse_json['results'][0]['title'],
+                overview = parse_json['results'][0]['overview'],
+                release_date = parse_json['results'][0]['release_date'],
+                tmdb_id = parse_json['results'][0]['id'],
+                image = parse_json['results'][0]['poster_path']  
+            )
+            movie.services.extend(sources)
+            movie.save()
+            return movie
 
 def watchmode_data(request):
     sauce = []
@@ -56,6 +61,10 @@ def watchmode_data(request):
         else:
             continue
     return sauce
+
+def movie_detail(request):
+    movie = Movie.objects.all(request=id)
+    return movie
 
 
 class MovieViewSet(viewsets.ModelViewSet):

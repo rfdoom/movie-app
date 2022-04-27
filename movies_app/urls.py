@@ -9,5 +9,6 @@ router.register('users', views.UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('result/', views.tmdb_data)
+    path('result/', views.tmdb_data),
+    path('result/<int:request>', views.movie_detail),
 ]
