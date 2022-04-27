@@ -63,7 +63,8 @@ def watchmode_data(request):
     return sauce
 
 def movie_detail(request):
-    movie = Movie.objects.all(request=id)
+    request = request.title()
+    movie = Movie.objects.get()
     return movie
 
 

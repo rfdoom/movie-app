@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 
 function Search(props) {
 
-  const [searchResults, setSearchResults] = useState('')
+  const [searchResults, setSearchResults] = useState([])
   const [dataIsLoaded, setdataIsLoaded] = useState(false)
 /* TODO catch 500 error, get results to display correctly */
   const handleSubmit = (e) => {
@@ -13,7 +13,7 @@ function Search(props) {
       .then((response) => {
       console.log(response)
       setSearchResults(response.data)
-      });
+      })
     }
     catch (e) {
       console.error(e);
