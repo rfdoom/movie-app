@@ -11,8 +11,8 @@ function Search(props) {
       e.preventDefault();
       axios.post('http://localhost:8000/api/result/', new FormData(e.target))
       .then((response) => {
-      //console.log(response)
-      setSearchResults(response.data)
+      console.log(response)
+      setSearchResults(response.data[0])
       })
     }
     catch (e) {
@@ -20,10 +20,6 @@ function Search(props) {
     }
   }
 
-  // const getResult = async () => {
-  //   const { data } = await axios.get(`https://localhost:8000/api/result/${request}`)
-  //   console.log(data)
-  // }
 
   return (
     <div>
@@ -41,6 +37,10 @@ function Search(props) {
       </form>
       <br />
       <br />
+      <h3>{searchResults['title']}</h3>
+      <h3>{searchResults['overview']}</h3>
+      <h3>{searchResults['release_date']}</h3>
+      <h3>{searchResults['services']}</h3>
     </div>
   )
 }

@@ -1,14 +1,14 @@
 from re import T
 from django.shortcuts import render
 from .models import Movie, Review
-import requests, json, urllib.request
+import requests
 from rest_framework import viewsets
 from .serializers import *
 from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 
 # To fetch a list of movies based on a keyword
@@ -25,17 +25,21 @@ WATCHMODE_API_KEY = 'y0IeErP6SKuGg0JauKEzL884XeqeQc80awqexTeD'
 
 # TODO get csrf on and working with axios
 # TODO pull from database if title already there
+# Movie.objects.values_list('title', 'overview', 'release_date', 'image').get(title=titleCase
 @csrf_exempt
 def tmdb_data(request):
     titleCase = request.POST['search'].title()
     if Movie.objects.filter(title=titleCase).exists(): 
-        return Movie.objects.filter(**titleCase)
+        print(Movie.objects.filter(title=titleCase).values())
+        movie = list(Movie.objects.filter(title=titleCase).values())
+        return JsonResponse(movie, safe=False)
     else:
         query = request.POST['search'].replace(' ', '%20')
         url = f'https://api.themoviedb.org/3/search/movie?api_key={TMDB_API_KEY}&query={query}>'
         response = requests.get(url)
         if response.status_code == 200:
             parse_json = response.json()
+            print(parse_json)
             tmdb_id = parse_json['results'][0]['id']
             sources = watchmode_data(tmdb_id)
             movie = Movie(
@@ -47,7 +51,7 @@ def tmdb_data(request):
             )
             movie.services.extend(sources)
             movie.save()
-            return HttpResponse(movie.show_all())
+            return JsonResponse(list(movie.objects.values()), safe=False)
 
 def watchmode_data(request):
     sauce = []
