@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 
 # To fetch a list of movies based on a keyword
@@ -28,7 +29,7 @@ WATCHMODE_API_KEY = 'y0IeErP6SKuGg0JauKEzL884XeqeQc80awqexTeD'
 def tmdb_data(request):
     titleCase = request.POST['search'].title()
     if Movie.objects.filter(title=titleCase).exists(): 
-        return Movie.objects.get(title=titleCase)
+        return Movie.objects.filter(**titleCase)
     else:
         query = request.POST['search'].replace(' ', '%20')
         url = f'https://api.themoviedb.org/3/search/movie?api_key={TMDB_API_KEY}&query={query}>'
@@ -46,7 +47,7 @@ def tmdb_data(request):
             )
             movie.services.extend(sources)
             movie.save()
-            return movie
+            return HttpResponse(movie.show_all())
 
 def watchmode_data(request):
     sauce = []
@@ -64,7 +65,7 @@ def watchmode_data(request):
 
 def movie_detail(request):
     request = request.title()
-    movie = Movie.objects.get()
+    movie = Movie.objects.get(title=request)
     return movie
 
 

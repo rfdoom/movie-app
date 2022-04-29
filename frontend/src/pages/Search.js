@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 
 function Search(props) {
 
-  const [searchResults, setSearchResults] = useState([])
+  const [searchResults, setSearchResults] = useState('')
   const [dataIsLoaded, setdataIsLoaded] = useState(false)
 /* TODO catch 500 error, get results to display correctly */
   const handleSubmit = (e) => {
@@ -11,7 +11,7 @@ function Search(props) {
       e.preventDefault();
       axios.post('http://localhost:8000/api/result/', new FormData(e.target))
       .then((response) => {
-      console.log(response)
+      //console.log(response)
       setSearchResults(response.data)
       })
     }
