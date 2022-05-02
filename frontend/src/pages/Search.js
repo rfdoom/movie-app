@@ -5,7 +5,7 @@ import { useState } from 'react'
 function Search(props) {
 
   const [searchResults, setSearchResults] = useState('')
-  const [values, setValues] = useState({movie_id: searchResults['id'], author: '', stars: '', comment: ''})
+  const [values, setValues] = useState({movie: searchResults['id'], author: '', stars: '', comment: ''})
  
   const handleSubmit = (e) => {
     try {
@@ -21,12 +21,15 @@ function Search(props) {
     }
   }
 
+  const handleChange = (e) => {
+    setValues({...values, [e.target.name]: e.target.value})
+  }
+
   const handleReview = (e) => {
     try {
       e.preventDefault()
-      setValues({...values, [e.target.name]: e.target.value})
       console.log(values)
-      axios.post('http://localhost:8000/api/review/', values )
+      axios.post('http://localhost:8000/api/review/', new FormData(e.target) )
       .then(response => {
         console.log(response)
       })
@@ -63,11 +66,12 @@ function Search(props) {
       <div>
         {searchResults ? (
           <form action="/search" method="get" onSubmit={handleReview}>
+            <input type="hidden" name="movie" defaultValue={searchResults['id']} />
             <label className="review-label">Author: </label>
-            <input type="text" placeholder="Enter Your Name..." name="author"/>
+            <input type="text" placeholder="Enter Your Name..." name="author" onChange={handleChange}/>
             <br /><br />
             <label className="review-label">Rating: </label>
-            <select name="stars">
+            <select name="stars" onChange={handleChange}>
               <option value='1'>1</option>
               <option value='2'>2</option>
               <option value='3'>3</option>
@@ -76,9 +80,9 @@ function Search(props) {
             </select>
             <br /><br />
             <label className="review-label">Review: </label>
-            <textarea type="text" placeholder="Enter Your Review..." name="comment"/>
+            <textarea type="text" placeholder="Enter Your Review..." name="comment" onChange={handleChange}/>
             <br /><br />
-            <button type="submit" className="submit-button" onClick={handleReview}>Submit Review</button>
+            <button type="submit" className="submit-button">Submit Review</button>
             <br /> <br />
           </form>
         ):(

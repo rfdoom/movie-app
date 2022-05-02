@@ -83,7 +83,7 @@ def post_new_review(request):
     new_review.author = request.POST['author']
     new_review.stars = request.POST['stars']
     new_review.comment = request.POST['comment']
-    new_review.movie_id = request
+    new_review.movie_id = request.POST['movie']
     new_review.full_clean()
     new_review.save()
 

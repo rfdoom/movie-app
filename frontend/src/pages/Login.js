@@ -52,34 +52,49 @@ function Login(props) {
     return navigate('/home')
   }
 
-  return (
-    <div>
-      <h1>Login User</h1>
+  const handleLogout = (e) => {
+    e.preventDefault()
+    setCredentials({username: '', password: ''})
+    console.log(credentials)
+  }
 
-      <label>
-        Username: 
-        <input 
-          type="text" 
-          name="username"  
-          onChange={inputChanged}
-        />
-      </label>
-      <br />
-      <label>
-        Password: 
-        <input 
-          type="password" 
-          name="password"  
-          onChange={inputChanged}
-        />
-      </label>
-      <br />
-      <button onClick={login}>Login</button>
-      <button onClick={register}>Register</button>
+  if (credentials.password == '') {
+    return (
+      <div>
+        <h1>Login User</h1>
 
-    </div>
-  )
-  
+        <label>
+          Username: 
+          <input 
+            type="text" 
+            name="username"  
+            onChange={inputChanged}
+          />
+        </label>
+        <br />
+        <label>
+          Password: 
+          <input 
+            type="password" 
+            name="password"  
+            onChange={inputChanged}
+          />
+        </label>
+        <br />
+        <button onClick={login}>Login</button>
+        <button onClick={register}>Register</button>
+
+      </div>
+    )
+  }
+  else {
+    return (
+      <div>
+        <h1>You are already logged in</h1>
+        <button onClick={handleLogout}>Logout</button> 
+      </div>
+    )
+  }
 }
 
 export default Login;
