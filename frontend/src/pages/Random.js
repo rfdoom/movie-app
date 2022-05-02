@@ -25,8 +25,9 @@ function Random(props) {
 
   return (
     <div>
+      <br /> <br /><br /> <br /> <br /><br /> <br />
       <form action="/random" method="get" onSubmit={handleRandom}>
-        <button type="submit" className="random-button">Random Movie</button>
+        <button type="submit" className="random-button"><span className="button-words">Random Movie</span></button>
       </form>
       <br />
       <br />

@@ -86,6 +86,11 @@ def post_new_review(request):
     new_review.movie_id = request.POST['movie']
     new_review.full_clean()
     new_review.save()
+    movie = request.POST['movie']
+    reviews = list(Review.objects.filter(movie_id=movie).values())
+    return HttpResponse(reviews)
+
+    
 
 
 class MovieViewSet(viewsets.ModelViewSet):

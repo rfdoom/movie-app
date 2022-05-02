@@ -20,11 +20,14 @@ function App() {
   return (
     <div className="App background">
       <Router>
-        <Link to='/'><h1>WhatToWatch</h1></Link>
         <div className="default-links">
-          <Link to="/"><h4 className='link login-link'>Login</h4></Link>
-          <Link to="/search"><h4 className='link search-link'>Search</h4></Link>
-          <Link to="/random"><h4 className='link random-link'>Random</h4></Link>
+          <nav className='nav'>
+            <ul>
+              <li className='link'><Link to="/"><h4 className='link login-link'>Login</h4></Link></li>
+              <li className='link'><Link to="/search"><h4 className='link search-link'>Search</h4></Link></li>
+              <li className='link'><Link to="/random"><h4 className='link random-link'>Random</h4></Link></li>
+            </ul>
+          </nav>
         </div>
         <Routes>
           <Route path="/home" element={<Home />}/>

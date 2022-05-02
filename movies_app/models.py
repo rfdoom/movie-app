@@ -17,9 +17,6 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
-    def show_all(self):
-        return [self.title, self.overview, self.release_date, self.image, self.services]
-
     
 
 class Review(models.Model):

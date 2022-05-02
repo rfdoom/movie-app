@@ -6,6 +6,7 @@ function Search(props) {
 
   const [searchResults, setSearchResults] = useState('')
   const [values, setValues] = useState({movie: searchResults['id'], author: '', stars: '', comment: ''})
+  const [reviews, setReviews] = useState([])
  
   const handleSubmit = (e) => {
     try {
@@ -31,7 +32,10 @@ function Search(props) {
       console.log(values)
       axios.post('http://localhost:8000/api/review/', new FormData(e.target) )
       .then(response => {
-        console.log(response)
+        JSON.stringify(response)
+        console.log('response:', response)
+        setReviews((prevState) => [...prevState, response.data]);
+        //console.log(reviews)
       })
     }
     catch (e) {
@@ -41,6 +45,7 @@ function Search(props) {
 
   return (
     <div>
+      <br /> <br /> <br /><br /> <br /> <br /><br /> <br />
       <form action="/" method="get" onSubmit={handleSubmit}>
         <label htmlFor="header-search">
           <span className="movie-search">Search Movies</span>
@@ -57,16 +62,18 @@ function Search(props) {
       </form>
       <br />
       <div>
-        <p className="note">NOTE: When you search, you add that movie to the database.</p>
+        <span className="note">NOTE: When you search, you add that movie to the database.</span>
       </div>
       <br />
       <h2 className="movie-title">{searchResults['title']}</h2>
       <h3 className="movie-release">{searchResults['release_date']}</h3>
       <h3 className="movie-overview">{searchResults['overview']}</h3>
-      <div>
+      <h4>{reviews}</h4>
+      <div className="leave-review">
         {searchResults ? (
           <form action="/search" method="get" onSubmit={handleReview}>
-            <input type="hidden" name="movie" defaultValue={searchResults['id']} />
+            <h3 className="review-label">Want to leave a review?</h3>
+            <input type="hidden" name="movie" defaultValue={searchResults['id']}/>
             <label className="review-label">Author: </label>
             <input type="text" placeholder="Enter Your Name..." name="author" onChange={handleChange}/>
             <br /><br />
