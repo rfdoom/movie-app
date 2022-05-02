@@ -1,7 +1,8 @@
 from re import T
+from django.forms import ValidationError
 from django.shortcuts import render
 from .models import Movie, Review
-import requests
+import requests, random
 from rest_framework import viewsets
 from .serializers import *
 from django.contrib.auth.models import User
@@ -42,16 +43,19 @@ def tmdb_data(request):
             print(parse_json)
             tmdb_id = parse_json['results'][0]['id']
             sources = watchmode_data(tmdb_id)
-            movie = Movie(
+            mov = Movie(
                 title = parse_json['results'][0]['title'],
                 overview = parse_json['results'][0]['overview'],
                 release_date = parse_json['results'][0]['release_date'],
                 tmdb_id = parse_json['results'][0]['id'],
                 image = parse_json['results'][0]['poster_path']  
             )
-            movie.services.extend(sources)
-            movie.save()
-            return JsonResponse(list(movie.objects.values()), safe=False)
+            mov.services.extend(sources)
+            theTitle = mov.title
+            mov.full_clean()
+            mov.save()
+            movie = list(Movie.objects.filter(title=theTitle).values())
+            return JsonResponse(movie, safe=False)
 
 def watchmode_data(request):
     sauce = []
@@ -67,10 +71,21 @@ def watchmode_data(request):
             continue
     return sauce
 
-def movie_detail(request):
-    request = request.title()
-    movie = Movie.objects.get(title=request)
-    return movie
+@csrf_exempt
+def random_movie(request):
+    movie = list(Movie.objects.order_by('?').values()[:1])
+    return JsonResponse(movie[0], safe=False)
+
+@csrf_exempt
+def post_new_review(request):
+    print(request)
+    new_review = Review()
+    new_review.author = request.POST['author']
+    new_review.stars = request.POST['stars']
+    new_review.comment = request.POST['comment']
+    new_review.movie_id = request
+    new_review.full_clean()
+    new_review.save()
 
 
 class MovieViewSet(viewsets.ModelViewSet):

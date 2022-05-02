@@ -5,6 +5,8 @@ import React, { useState } from 'react'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import Login from './pages/Login'
+import Random from './pages/Random'
+import main from './style/main.css'
 
 function App() {
   
@@ -16,23 +18,19 @@ function App() {
   }
   
   return (
-    <div className="App">
-      <div style={{
-        backgroundImage: "url(" + "https://hdclipartall.com/images/free-movie-night-clipart-movie-night-clipart-1271_1150.png" + ")",
-        width: '1300px',
-        height: '1300px'
-      }}>
-      </div>
+    <div className="App background">
       <Router>
-        <Link to='/'><h1>WhereToWatch</h1></Link>
+        <Link to='/'><h1>WhatToWatch</h1></Link>
         <div className="default-links">
-          <Link to="/"><h4>Login</h4></Link>
-          <Link to="/search"><h4>Search</h4></Link>
+          <Link to="/"><h4 className='link login-link'>Login</h4></Link>
+          <Link to="/search"><h4 className='link search-link'>Search</h4></Link>
+          <Link to="/random"><h4 className='link random-link'>Random</h4></Link>
         </div>
         <Routes>
           <Route path="/home" element={<Home />}/>
           <Route path="/search" element={<Search />}/>
           <Route path="/" element={<Login userLogin={userLogin}/>}/>
+          <Route path="/random" element={<Random />}/>
         </Routes>
       </Router>
     </div>

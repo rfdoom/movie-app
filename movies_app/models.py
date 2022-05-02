@@ -14,8 +14,8 @@ class Movie(models.Model):
     image = models.CharField(max_length=255, blank=True, null=True)
     services = []
 
-    # def __str__(self):
-    #     return self.overview
+    def __str__(self):
+        return self.title
 
     def show_all(self):
         return [self.title, self.overview, self.release_date, self.image, self.services]
