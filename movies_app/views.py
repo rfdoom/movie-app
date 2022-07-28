@@ -1,4 +1,4 @@
-from re import T
+                                  fcz             /////from re import T
 from django.forms import ValidationError
 from django.shortcuts import render
 from .models import Movie, Review
